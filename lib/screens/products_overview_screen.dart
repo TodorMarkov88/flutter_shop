@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import '../widgets/products_grid.dart';
 import '../widgets/badge.dart';
 import '../providers/cart.dart';
+import './cart_screen.dart';
 
 enum FilterOptions { Favorites, All }
 
@@ -15,7 +16,7 @@ class ProductsOverviewScreen extends StatefulWidget {
 }
 
 class _ProductsOverviewScreenState extends State<ProductsOverviewScreen> {
-  late   bool _showOnlyFavorites = false;
+  late bool _showOnlyFavorites = false;
 
   @override
   Widget build(BuildContext context) {
@@ -53,12 +54,14 @@ class _ProductsOverviewScreenState extends State<ProductsOverviewScreen> {
             builder: (_, cart, ch) => Badge(
                 value: cart.itemCount.toString(),
                 color: Theme.of(context).colorScheme.secondary,
-                child: ch  as Widget),
+                child: ch as Widget),
             child: IconButton(
               icon: const Icon(
                 Icons.shopping_cart,
               ),
-              onPressed: () {},
+              onPressed: () {
+                Navigator.of(context).pushNamed(CartScreen.routeName);
+              },
             ),
           ),
         ],
