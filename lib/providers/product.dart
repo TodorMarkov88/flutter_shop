@@ -17,6 +17,8 @@ class Product with ChangeNotifier {
     this.isFavorite = false,
   });
 
+  
+
   void toggleFavoriteStatus() {
     // isFavorite != isFavorite;
     isFavorite ? isFavorite = false : isFavorite = true;
