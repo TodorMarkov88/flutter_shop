@@ -39,6 +39,15 @@ class _EditProductScreenState extends State<EditProductScreen> {
 
   void _updateImageUrl() {
     if (!_imageUrlFocusNode.hasFocus) {
+      if (_imageUrlController.text.isEmpty ||
+          (!_imageUrlController.text.startsWith('http') &&
+              !_imageUrlController.text.startsWith('https')) ||
+          (!_imageUrlController.text.endsWith('.png') &&
+              !_imageUrlController.text.endsWith('.jpg') &&
+              !_imageUrlController.text.endsWith('.jpeg'))) {
+        return;
+      }
+
       setState(() {});
     }
   }
@@ -108,12 +117,14 @@ class _EditProductScreenState extends State<EditProductScreen> {
                   return null;
                 },
                 onSaved: (value) {
-                  _editedProduct = Product(
-                      title: _editedProduct.title,
-                      price: double.parse(value!),
-                      description: _editedProduct.description,
-                      imageUrl: _editedProduct.imageUrl,
-                      id: '');
+                  if (double.tryParse(value!) != null) {
+                    _editedProduct = Product(
+                        title: _editedProduct.title,
+                        price: double.parse(value),
+                        description: _editedProduct.description,
+                        imageUrl: _editedProduct.imageUrl,
+                        id: '');
+                  }
                 },
               ),
               TextFormField(
@@ -125,7 +136,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
                   if (value == null || value.isEmpty) {
                     return 'Please enter a description';
                   }
-                  if (value.length > 10) {
+                  if (value.length < 10) {
                     return 'Should be at least 10 characterslong.';
                   }
                   return null;
@@ -178,6 +189,9 @@ class _EditProductScreenState extends State<EditProductScreen> {
                             description: _editedProduct.description,
                             imageUrl: value!,
                             id: '');
+                      },
+                      validator: (value) {
+                        return null;
                       },
                     ),
                   ),
