@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import '../providers/product.dart';
 import '../providers/products.dart';
 import 'package:provider/provider.dart';
-
+import 'package:http/http.dart' as http;
 class EditProductScreen extends StatefulWidget {
   static const routeName = '/edit-product';
   const EditProductScreen({Key? key}) : super(key: key);
@@ -47,17 +47,20 @@ class _EditProductScreenState extends State<EditProductScreen> {
   @override
   void didChangeDependencies() {
     if (_initState) {
-      final productId = ModalRoute.of(context)!.settings.arguments as String;
-      // ignore: unnecessary_null_comparison
-      if (productId != null && productId != '') {
-        _editedProduct =
-            Provider.of<Products>(context, listen: false).findById(productId);
-        _initValue = {
-          'title': _editedProduct.title,
-          'description': _editedProduct.description,
-          'price': _editedProduct.price.toString(),
-        };
-        _imageUrlController.text = _editedProduct.imageUrl;
+      if (ModalRoute.of(context)!.settings.arguments != null) {
+        final productId = ModalRoute.of(context)!.settings.arguments as String;
+
+        // ignore: unnecessary_null_comparison
+        if (productId != null && productId != '') {
+          _editedProduct =
+              Provider.of<Products>(context, listen: false).findById(productId);
+          _initValue = {
+            'title': _editedProduct.title,
+            'description': _editedProduct.description,
+            'price': _editedProduct.price.toString(),
+          };
+          _imageUrlController.text = _editedProduct.imageUrl;
+        }
       }
     }
     _initState = false;
