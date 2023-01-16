@@ -3,6 +3,7 @@ import '../providers/product.dart';
 import '../providers/products.dart';
 import 'package:provider/provider.dart';
 import 'package:http/http.dart' as http;
+
 class EditProductScreen extends StatefulWidget {
   static const routeName = '/edit-product';
   const EditProductScreen({Key? key}) : super(key: key);
@@ -38,6 +39,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
     'price': '',
     'imageUrl': '',
   };
+  var isLoading = false;
   @override
   void initState() {
     _imageUrlFocusNode.addListener(_updateImageUrl);
@@ -80,17 +82,22 @@ class _EditProductScreenState extends State<EditProductScreen> {
     }
   }
 
-  void _saveForm() async {
+  Future<void> _saveForm() async {
     final isValid = _form.currentState?.validate();
     if (!isValid!) {
       return;
     }
     _form.currentState?.save();
+    setState(() {
+      _isLoading = true;
+    });
+
     // ignore: unnecessary_null_comparison
     if (_editedProduct.id.isEmpty) {
       try {
-        Provider.of<Products>(context, listen: false)
+        await Provider.of<Products>(context, listen: false)
             .addProduct(_editedProduct);
+        _form.currentState?.save();
       } catch (onError) {
         // ignore: prefer_void_to_null
         await showDialog<Null>(
@@ -113,13 +120,14 @@ class _EditProductScreenState extends State<EditProductScreen> {
       //   });
       //   Navigator.of(context).pop();
       // }
+
     } else {
-      Provider.of<Products>(context, listen: false)
+      await Provider.of<Products>(context, listen: false)
           .updateProduct(_editedProduct.id, _editedProduct);
     }
 
     setState(() {
-      _isLoading = true;
+      _isLoading = false;
     });
     if (!mounted) return;
     Navigator.of(context).pop();
