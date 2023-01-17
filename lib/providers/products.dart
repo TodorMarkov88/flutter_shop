@@ -112,7 +112,7 @@ class Products with ChangeNotifier {
         url,
         body: json.encode({
           'title': product.title,
-          'descprition': product.description,
+          'description': product.description,
           'imageUrl': product.imageUrl,
           'price': product.price,
           'isFavorite': product.isFavorite
