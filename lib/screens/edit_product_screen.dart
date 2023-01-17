@@ -93,41 +93,42 @@ class _EditProductScreenState extends State<EditProductScreen> {
     });
 
     // ignore: unnecessary_null_comparison
-    if (_editedProduct.id.isEmpty) {
+    if (_editedProduct.id.isNotEmpty) {
+      await Provider.of<Products>(context, listen: false)
+          .updateProduct(_editedProduct.id, _editedProduct);
+      //
+    } else {
       try {
         await Provider.of<Products>(context, listen: false)
             .addProduct(_editedProduct);
-        _form.currentState?.save();
-      } catch (onError) {
-        // ignore: prefer_void_to_null
-        await showDialog<Null>(
-            context: context,
-            builder: (ctx) => AlertDialog(
-                  title: const Text('An Error Occured'),
-                  content: const Text('Something unexpected happened'),
-                  actions: [
-                    TextButton(
-                        onPressed: (() {
-                          Navigator.of(ctx).pop();
-                        }),
-                        child: const Text('Okay'))
-                  ],
-                ));
+      } catch (error) {
+        await showDialog(
+          context: context,
+          builder: (ctx) => AlertDialog(
+            title: const Text('An error occurred!'),
+            content: const Text('Something went wrong.'),
+            actions: <Widget>[
+              TextButton(
+                child: const Text('Okay'),
+                onPressed: () {
+                  Navigator.of(ctx).pop();
+                },
+              )
+            ],
+          ),
+        );
       }
-      //  finally {
-      //   setState(() {
-      //     _isLoading = false;
-      //   });
-      //   Navigator.of(context).pop();
-      // }
-
-    } else {
-      await Provider.of<Products>(context, listen: false)
-          .updateProduct(_editedProduct.id, _editedProduct);
+      finally{
+            setState(() {
+      _isLoading = true;
+    });
+    if (!mounted) return;
+    Navigator.of(context).pop();
+      }
     }
 
     setState(() {
-      _isLoading = false;
+      _isLoading = true;
     });
     if (!mounted) return;
     Navigator.of(context).pop();

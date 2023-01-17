@@ -74,12 +74,12 @@ class Products with ChangeNotifier {
       http.Response response = await http.get(
         url,
       );
-    if (json.decode(response.body) != null) {
-      final List<Product> loadedProducts = [];
-      // if(response.body!=null){
-      
-         final extractedData = 
-           json.decode(response.body) as Map<String, dynamic> ;
+      if (json.decode(response.body) != null) {
+        final List<Product> loadedProducts = [];
+        // if(response.body!=null){
+
+        final extractedData =
+            json.decode(response.body) as Map<String, dynamic>;
         extractedData.forEach((prodId, prodData) {
           loadedProducts.add(Product(
             id: prodId,
@@ -139,7 +139,20 @@ class Products with ChangeNotifier {
 
   Future<void> updateProduct(String id, Product newProduct) async {
     final prodIndex = _items.indexWhere((prod) => prod.id == id);
+    final url = Uri.parse(
+        'https://flutter-update-a338f-default-rtdb.europe-west1.firebasedatabase.app/products/$id.json');
     if (prodIndex >= 0) {
+      await http.patch(
+        url,
+        body: json.encode({
+          'title': newProduct.title,
+          'description': newProduct.description,
+          'imageUrl': newProduct.imageUrl,
+          'price': newProduct.price,
+          'isFavorite': newProduct.isFavorite
+        }),
+      );
+
       _items[prodIndex] = newProduct;
       notifyListeners();
     } else {}
