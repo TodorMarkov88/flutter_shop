@@ -52,8 +52,8 @@ class _EditProductScreenState extends State<EditProductScreen> {
       if (ModalRoute.of(context)!.settings.arguments != null) {
         final productId = ModalRoute.of(context)!.settings.arguments as String;
 
-        // ignore: unnecessary_null_comparison
-        if (productId != null && productId != '') {
+       
+        if (productId.isEmpty) {
           _editedProduct =
               Provider.of<Products>(context, listen: false).findById(productId);
           _initValue = {
@@ -117,21 +117,20 @@ class _EditProductScreenState extends State<EditProductScreen> {
             ],
           ),
         );
-      }
-      finally{
-            setState(() {
-      _isLoading = true;
-    });
-    if (!mounted) return;
-    Navigator.of(context).pop();
+      } finally {
+        setState(() {
+          _isLoading = true;
+        });
+        // if (!mounted) return;
+        Navigator.of(context).pop();
       }
     }
 
-    setState(() {
-      _isLoading = true;
-    });
-    if (!mounted) return;
-    Navigator.of(context).pop();
+    // setState(() {
+    //   _isLoading = true;
+    // });
+    // if (!mounted) return;
+    // Navigator.of(context).pop();
   }
 
   @override
