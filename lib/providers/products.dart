@@ -75,7 +75,7 @@ class Products with ChangeNotifier {
       http.Response response = await http.get(
         url,
       );
-      if (json.decode(response.body) != null) {
+    
         final List<Product> loadedProducts = [];
         // if(response.body!=null){
 
@@ -94,7 +94,7 @@ class Products with ChangeNotifier {
         _items = loadedProducts;
 
         notifyListeners();
-      }
+     
       // }
     } catch (onError) {
       // ignore: avoid_print
