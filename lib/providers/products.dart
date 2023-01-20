@@ -75,12 +75,16 @@ class Products with ChangeNotifier {
       http.Response response = await http.get(
         url,
       );
-    
-        final List<Product> loadedProducts = [];
+
+      final List<Product> loadedProducts = [];
+      if (jsonDecode(response.body) == null || response.statusCode > 400) {
         // if(response.body!=null){
 
+        return;
+      } else {
         final extractedData =
             json.decode(response.body) as Map<String, dynamic>;
+      
         extractedData.forEach((prodId, prodData) {
           loadedProducts.add(Product(
             id: prodId,
@@ -92,9 +96,8 @@ class Products with ChangeNotifier {
           ));
         });
         _items = loadedProducts;
-
         notifyListeners();
-     
+      }
       // }
     } catch (onError) {
       // ignore: avoid_print
@@ -129,7 +132,6 @@ class Products with ChangeNotifier {
       );
       _items.add(newProduct);
       notifyListeners();
-      return Future.delayed(const Duration(seconds: 3));
     } catch (onError) {
       // ignore: avoid_print
       print(onError);
