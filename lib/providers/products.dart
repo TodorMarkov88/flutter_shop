@@ -84,7 +84,7 @@ class Products with ChangeNotifier {
       } else {
         final extractedData =
             json.decode(response.body) as Map<String, dynamic>;
-      
+
         extractedData.forEach((prodId, prodData) {
           loadedProducts.add(Product(
             id: prodId,
