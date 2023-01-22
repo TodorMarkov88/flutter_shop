@@ -10,7 +10,7 @@ class Product with ChangeNotifier {
   final String description;
   final double price;
   final String imageUrl;
-  bool isFavorite;
+   bool isFavorite;
 
   Product({
     required this.id,
@@ -21,25 +21,25 @@ class Product with ChangeNotifier {
     this.isFavorite = false,
   });
 
-  void _setFavValue(bool newValue) {
+ Future<void> _setFavValue(bool newValue) async{
     isFavorite = newValue;
     notifyListeners();
   }
 
-  Future<void> toggleFavoriteStatus(String token) async {
+  Future<void> toggleFavoriteStatus(String token, String userId) async {
     // isFavorite != isFavorite;
 
     final oldStatus = isFavorite;
     isFavorite ? isFavorite = false : isFavorite = true;
     notifyListeners();
     final url = Uri.parse(
-        'https://flutter-update-a338f-default-rtdb.europe-west1.firebasedatabase.app/products/$id.json?auth=$token');
+        'https://flutter-update-a338f-default-rtdb.europe-west1.firebasedatabase.app/userFavorites/$userId/$id.json?auth=$token');
     try {
-      final response = await http.patch(
+      final response = await http.put(
         url,
-        body: json.encode({
-          'isFavorite': isFavorite,
-        }),
+        body: json.encode(
+          isFavorite,
+        ),
       );
       if (response.statusCode >= 400) {
         _setFavValue(oldStatus);
@@ -48,4 +48,6 @@ class Product with ChangeNotifier {
       _setFavValue(oldStatus);
     }
   }
+
+  void toogleFavorite(String? token, String? userId) {}
 }

@@ -4,14 +4,13 @@ import 'package:flutter/cupertino.dart';
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'dart:convert';
 
 import 'package:shop_app/models/http_exception.dart';
 
 class Auth with ChangeNotifier {
   String? _token;
   DateTime? _expiryDate;
-  late String? _userId;
+  String? _userId;
 
   // Future<void> _authenticate(
   //     String email, String password, String urlSegment) async {}
@@ -25,6 +24,10 @@ class Auth with ChangeNotifier {
       return _token;
     }
     return null;
+  }
+
+  String? get userId {
+    return _userId;
   }
 
   Future<void> _authenticate(
