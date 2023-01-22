@@ -9,19 +9,30 @@ import 'dart:convert';
 import 'package:shop_app/models/http_exception.dart';
 
 class Auth with ChangeNotifier {
-  late String _token;
-  late DateTime _expiryDate;
-  late String id;
+  String? _token;
+  DateTime? _expiryDate;
+  late String? _userId;
 
   // Future<void> _authenticate(
   //     String email, String password, String urlSegment) async {}
 
-  Future<void> singup(String email, String password) async {
-    final url = Uri.parse(
-        "https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyAuEB1cb1WNaJ9cNAU5Mf8xXoucmMgA7Sk");
+  bool get isAuth {
+    return _token != null;
+  }
 
+  String? get token {
+    if (_expiryDate!.isAfter(DateTime.now())) {
+      return _token;
+    }
+    return null;
+  }
+
+  Future<void> _authenticate(
+      String email, String password, String urlSegment) async {
+    final url = Uri.parse(
+        ('https://identitytoolkit.googleapis.com/v1/accounts:$urlSegment?key=AIzaSyAuEB1cb1WNaJ9cNAU5Mf8xXoucmMgA7Sk'));
     try {
-      http.Response response = await http.post(
+      final response = await http.post(
         url,
         body: json.encode(
           {
@@ -31,37 +42,33 @@ class Auth with ChangeNotifier {
           },
         ),
       );
-      final responseData = jsonDecode(response.body);
+
+      final responseData = json.decode(response.body);
       if (responseData['error'] != null) {
         throw HttpException(responseData['error']['message']);
       }
+
+      _token = responseData['idToken'];
+      _userId = responseData['localId'];
+      _expiryDate = DateTime.now().add(
+        Duration(
+          seconds: int.parse(
+            responseData['expiresIn'],
+          ),
+        ),
+      );
+      notifyListeners();
     } catch (error) {
+      print(error);
       throw error;
     }
   }
 
-  Future<void> login(String email, String password) async {
-    final url = Uri.parse(
-        "https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyAuEB1cb1WNaJ9cNAU5Mf8xXoucmMgA7Sk");
+  Future<void> signup(String? email, String? password) async {
+    return _authenticate(email!, password!, 'signUp');
+  }
 
-    try {
-      http.Response response = await http.post(
-        url,
-        body: json.encode(
-          {
-            'email': email,
-            'password': password,
-            'returnSecureToken': true,
-          },
-        ),
-      );
-      final responseData = jsonDecode(response.body);
-
-      if (responseData['error'] != null) {
-        throw HttpException(responseData['error']['message']);
-      }
-    } catch (error) {
-      throw error;
-    }
+  Future<void> login(String? email, String? password) async {
+    return _authenticate(email!, password!, 'signInWithPassword');
   }
 }

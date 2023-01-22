@@ -22,7 +22,7 @@ class AuthScreen extends StatelessWidget {
     return Scaffold(
       // resizeToAvoidBottomInset: false,
       body: Stack(
-        children: <Widget>[
+        children: [
           Container(
             decoration: BoxDecoration(
               gradient: LinearGradient(
@@ -123,6 +123,7 @@ class _AuthCardState extends State<AuthCard> {
   Future<void> _submit() async {
     if (!_formKey.currentState!.validate()) {
       // Invalid!
+
       return;
     }
     _formKey.currentState!.save();
@@ -132,12 +133,13 @@ class _AuthCardState extends State<AuthCard> {
     try {
       if (_authMode == AuthMode.Login) {
         // Log user in
-        await Provider.of<Auth>(context, listen: false).login(
-            _authData["email"] as String, _authData["password"] as String);
+
+        await Provider.of<Auth>(context, listen: false)
+            .login(_authData["email"], _authData["password"]);
       } else {
         // Sign user up
-        await Provider.of<Auth>(context, listen: false).singup(
-            _authData["email"] as String, _authData["password"] as String);
+        await Provider.of<Auth>(context, listen: false)
+            .signup(_authData["email"], _authData["password"]);
       }
     } on HttpException catch (error) {
       var errorMessage = 'Authentication failed';
