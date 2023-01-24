@@ -22,18 +22,20 @@ class Orders with ChangeNotifier {
     return [..._orders];
   }
 
-  Orders(this.authToken,this._orders);
   final String authToken;
+  final String userId;
+  Orders(this.authToken, this.userId, this._orders);
 
   Future<void> fetchAndSetOrders() async {
     final url = Uri.parse(
-        'https://flutter-update-a338f-default-rtdb.europe-west1.firebasedatabase.app/orders.json?auth=$authToken');
+        'https://flutter-update-a338f-default-rtdb.europe-west1.firebasedatabase.app/orders/$userId.json?auth=$authToken');
 
     try {
       http.Response response = await http.get(
         url,
       );
-      if (jsonDecode(response.body) == null || response.statusCode > 400)return;
+      if (jsonDecode(response.body) == null || response.statusCode > 400)
+        return;
       final List<OrderItem> loadedOrders = [];
       final extractedData = json.decode(response.body) as Map<String, dynamic>;
 

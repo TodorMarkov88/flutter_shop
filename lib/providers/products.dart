@@ -72,9 +72,11 @@ class Products with ChangeNotifier {
   //       notifyListeners();
   // }
 
-  Future<void> fetchAndSetProduct(bool bool) async {
+  Future<void> fetchAndSetProduct(bool bool,[bool filterByUser = false]) async {
+        final filterString =
+        filterByUser ? 'orderBy="creatorId"&equalTo="$userId"' : '';
     final url = Uri.parse(
-        'https://flutter-update-a338f-default-rtdb.europe-west1.firebasedatabase.app/products.json?auth=$authToken');
+        'https://flutter-update-a338f-default-rtdb.europe-west1.firebasedatabase.app/products.json?auth=$authToken&$filterString');
     try {
       http.Response response = await http.get(
         url,
@@ -116,12 +118,11 @@ class Products with ChangeNotifier {
     }
   }
 
-  Future<void> addProduct(Product product, [bool filterByUser = false]) async {
-    final filterString =
-        filterByUser ? 'orderBy="creatorId"&equalTo="$userId"' : '';
+  Future<void> addProduct(Product product ) async {
+ 
 
     final url = Uri.parse(
-        'https://flutter-update-a338f-default-rtdb.europe-west1.firebasedatabase.app/products.json?auth=$authToken&$filterString');
+        'https://flutter-update-a338f-default-rtdb.europe-west1.firebasedatabase.app/products.json?auth=$authToken');
     try {
       http.Response response = await http.post(
         url,
