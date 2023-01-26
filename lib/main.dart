@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:shop_app/screens/splash_scree.dart';
+
 import 'package:shared_preferences/shared_preferences.dart';
 import './screens/products_overview_screen.dart';
 import './screens/product_detail_screen.dart';
@@ -14,6 +14,7 @@ import './screens/user_product_screen.dart';
 import './screens/edit_product_screen.dart';
 import './screens/auth_screen.dart';
 import './screens/splash_screen.dart';
+import './helpers/custom_route.dart';
 
 void main() => runApp(const MyApp());
 
@@ -50,10 +51,13 @@ class MyApp extends StatelessWidget {
         builder: (context, auth, _) => MaterialApp(
           title: 'MyShop',
           theme: ThemeData(
-            colorScheme: ColorScheme.fromSwatch(primarySwatch: Colors.purple)
-                .copyWith(secondary: Colors.orange),
-            fontFamily: 'Lato',
-          ),
+              colorScheme: ColorScheme.fromSwatch(primarySwatch: Colors.purple)
+                  .copyWith(secondary: Colors.orange),
+              fontFamily: 'Lato',
+              pageTransitionsTheme: PageTransitionsTheme(builders: {
+                TargetPlatform.android: CustomPageTransitionBuilder(MyApp),
+                TargetPlatform.iOS: CustomPageTransitionBuilder(MyApp),
+              })),
           home: auth.isAuth
               ? const ProductsOverviewScreen()
               : FutureBuilder(

@@ -34,8 +34,7 @@ class Orders with ChangeNotifier {
       http.Response response = await http.get(
         url,
       );
-      if (jsonDecode(response.body) == null || response.statusCode > 400)
-        return;
+      if (jsonDecode(response.body) == null || response.statusCode > 400)return;
       final List<OrderItem> loadedOrders = [];
       final extractedData = json.decode(response.body) as Map<String, dynamic>;
 
@@ -70,7 +69,7 @@ class Orders with ChangeNotifier {
 
   Future<void> addOrder(List<CartItem> cartProducts, double total) async {
     final url = Uri.parse(
-        'https://flutter-update-a338f-default-rtdb.europe-west1.firebasedatabase.app/orders.json?auth=$authToken');
+        'https://flutter-update-a338f-default-rtdb.europe-west1.firebasedatabase.app/orders/$userId.json?auth=$authToken');
     final timeStamp = DateTime.now();
     try {
       http.Response response = await http.post(
